@@ -10,8 +10,19 @@ class map_point {
 	}
 }
 
+// This simple polygon is for testing
+$polygon_map_test = array(
+	new map_point(0.0000, 0.0000),
+	new map_point(2.5000, 2.5000),
+	new map_point(5.0000, 0.0000),
+	new map_point(5.0000, 5.0000),
+	new map_point(2.5000, 2.5000),
+	new map_point(0.0000, 5.0000),
+	new map_point(0.0000, 0.0000)
+);
+
 // This polygon map looks like Finland :)
-$polygon_map = array(
+$polygon_map_finland = array(
 	new map_point(21.1047, 59.4072), 
 	new map_point(27.3999, 59.9672),
 	new map_point(32.2119, 62.8562),
@@ -38,11 +49,35 @@ $polygon_map = array(
 );
 
 // Here will be calculation to find point from map
-function seek_point($lat, $lon) {
+function seek_point($user_point, $polygon_map) {
 
-	// upcoming code
+	// Counter that calculates amount of intersections with polygon borders (lines)
+	$intersections = 0;
 
-	return false;
+	// How many coordinates we have on map, so many iterations..
+	$count = count($polygon_map);
+
+	// Will iterate whole polygon array (all coordinates)
+	for ($i=0; $i<$count; $i++)
+
+		// Select two next points from array (line)
+		$point1 = $polygon_map[$i];
+		$point2 = $polygon_map[$i+1];
+
+//			$crossing = diiba daaba..
+
+			if ($crossing) {
+                                $intersections++;
+			}
+		}
+        }
+
+	// Modulo, if intersections (starts from value 0) is even it will be inside of our polygon map
+	if ($intersections % 2 == 0) {
+		return FALSE;
+	} else {
+		return TRUE;
+	}
 }
 
 // Base that outputs html code
@@ -63,8 +98,15 @@ function main_page() {
 
 	// If user have entered coordinates
 	if (isset($_GET['lat']) && isset($_GET['lon'])) {
+
+		// Create array from coordinates
+		$user_point = array("lat" => $_GET['lat'], "lon" => $_GET['lon']);
+
+		// Polygon map that our seek will use
+		$polygon_map = $polygon_map_test;
+
 		// Try to seek coordinates from map
-		if (seek_point($lat, $lon) == TRUE)
+		if (seek_point($user_point, $polygon_map) == TRUE)
 			echo '<span style="color: green">Given coordinates on polygon map.</span><br/>';	
 		else
 			echo '<span style="color: pink;">Given coordinates not on polygon map.</span><br/>';
