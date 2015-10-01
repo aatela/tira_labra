@@ -1,0 +1,29 @@
+.main {
+	width: 720px;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.green {
+	color: green;
+}
+
+.pink {
+	color: pink;
+}
+
+.user_form,
+.performance {
+	float: left;
+	border: 1px solid #ccc;
+	padding: 15px;
+	margin: 10px;
+}
+
+.performance {
+	font-family: Verdana;
+	font-size: 12px;
+	line-height: 20px;
+}
+
