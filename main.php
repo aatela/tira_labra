@@ -2,28 +2,9 @@
 
 // Here is mostly user interface related stuff
 
-// Include base functions
+// Include input maps and calculation algorithm
+include("maps.php");
 include("base.php");
-
-// performance testing function
-function performance_test($count, $user_point, $polygon_map) {
-
-	$results = Array();
-	$before = microtime(true);
-
-	for ($i=0 ; $i<$count ; $i++) {
-		seek_point($user_point, $polygon_map);
-	}
-
-	$after = microtime(true);
-
-	// calculate all seeks and one seek per second
-	$results['count'] = $count;
-	$results['one_seek'] = (($after-$before)/$count)." sec / seek";
-	$results['all_seeks'] = $after-$before." sec";
-
-	return $results;
-}
 
 // Main page that outputs html code
 function main_page($polygon_map, $perf_test) {
@@ -75,18 +56,11 @@ function main_page($polygon_map, $perf_test) {
 		echo '	<div class="performance">';
 		echo '		Performance test results.<br/><br/>';
 
-		$results = performance_test($count=1, $user_point, $polygon_map);
-		echo '          Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
-		$results = performance_test($count=10, $user_point, $polygon_map);
-		echo '          Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
-		$results = performance_test($count=100, $user_point, $polygon_map);
-		echo '		Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
-		$results = performance_test($count=1000, $user_point, $polygon_map);
-		echo '		Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
-		$results = performance_test($count=10000, $user_point, $polygon_map);
-		echo '		Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
-		$results = performance_test($count=100000, $user_point, $polygon_map);
-		echo '          Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
+		// Calculates with: 1, 10, 100, 1 000, 10 000 and 100 000 times..
+		for ($i = 1; $i <= 100000; $i=$i*10) {
+			$results = performance_test($count=$i, $user_point, $polygon_map);
+			echo '		Calculations: '.$results['count'].'. All seeks: '.$results['all_seeks'].'. One seek: '.$results['one_seek'].'.<br/>';
+		}
 
 		echo '	</div>';
 	}
