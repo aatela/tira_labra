@@ -29,30 +29,40 @@ function main_page($polygon_map, $perf_test) {
 	echo '	<div class="user_form">';
 
 	// If user have entered coordinates
-	if (isset($_GET['lat']) && isset($_GET['lon'])) {
 
+	if (isset($_GET['lat']) && isset($_GET['lon']) && $_GET['lat'] == "" && $_GET['lon'] == "") {
+		echo '<span class="red">Please give coordinates..</span><br/><br/>';
+	} else if (isset($_GET['lat']) && isset($_GET['lon']) && $_GET['lat'] != "" && $_GET['lon'] != "") {
 		// Create map points from given coordinates
 		$user_point = new map_point($lat, $lon);
 
 		// Try to seek coordinates from map
 		if (seek_point($user_point, $polygon_map) == TRUE) {
-			echo '<span class="green">Given coordinates on polygon map.</span><br/>';
+			echo '<span class="green">Given coordinates on polygon map.</span><br/><br/>';
 		} else {
-			echo '<span class="pink">Given coordinates not on polygon map.</span><br/>';
+			echo '<span class="pink">Given coordinates not on polygon map.</span><br/><br/>';
 		}
-	} else {
-		echo 'Please give coordinates..';
 	}
 
 	echo '		<form action="main.php">';
-	echo '			Latitude: <input type="text" name="lat"><br>';
-	echo '			Longitude: <input type="text" name="lon"><br>';
-	echo '			<input type="submit" value="Submit">';
+	echo '			GPS Coordinates:<br/>';
+	echo '			Latitude: <input class="right" type="text" name="lat" placeholder="eg. 60.1708"'; if (isset($_GET['lat']) && $_GET['lat'] != "") { echo ' value="'.$_GET['lat'].'"'; } echo '><br/>';
+	echo '			Longitude: <input class="right" type="text" name="lon" placeholder="eg. 24.9375"'; if (isset($_GET['lon']) && $_GET['lon'] != "") { echo ' value="'.$_GET['lon'].'"'; } echo '"><br/>';
+	echo '			<br/>';
+	echo '			Polygon level for seeking:<br/>';
+	echo '			<input id="map4" type="radio" name="map" value="4"'; if (isset($_GET['map']) && $_GET['map'] == "4") { echo ' checked'; } echo '> <label for="map4">Map with 4 points</label><br/>';
+	echo '			<input id="map40" type="radio" name="map" value="40"'; if ((isset($_GET['map']) && $_GET['map'] == "40") || !(isset($_GET['map']))) { echo ' checked'; } echo '> <label for="map40">Map with 40 points</label><br/>';
+	echo '			<input id="map400" type="radio" name="map" value="400"'; if (isset($_GET['map']) && $_GET['map'] == "400") { echo ' checked'; } echo '> <label for="map400">Map with 400 points</label><br/>';
+
+	echo '			<br>';
+	echo '			Performance testing:<br>';
+	echo '			<input id="test" type="checkbox" name="test" value="1"'; if (isset($_GET['test'])) { echo ' checked'; } echo '> <label for="test">Run performance tests</label><br/>';
+	echo '			<input class="right" type="submit" value="Submit">';
 	echo '		</form>';
 	echo '	</div>';
 
 	// Run performance tests if its activated
-	if ($perf_test == TRUE && isset($_GET['lat']) && isset($_GET['lon'])) {
+	if (($perf_test == TRUE || isset($_GET['test'])) && isset($_GET['lat']) && isset($_GET['lon'])) {
 		echo '	<div class="performance">';
 		echo '		Performance test results.<br/><br/>';
 
@@ -71,10 +81,16 @@ function main_page($polygon_map, $perf_test) {
 }
 
 // Polygon map that our seek will use
-$polygon_map = $polygon_map_finland;
+if (isset($_GET['map']) && $_GET['map'] == "4") {
+	$polygon_map = $polygon_map_4points;
+} else if (isset($_GET['map']) && $_GET['map'] == "40") {
+        $polygon_map = $polygon_map_40points;
+} else if (isset($_GET['map']) && $_GET['map'] == "400") {
+        $polygon_map = $polygon_map_400points;
+}
 
 // Set performance testing to true / false
-$perf_test = TRUE;
+// $perf_test = TRUE;
 
 // Execute main program
 main_page($polygon_map, $perf_test);
